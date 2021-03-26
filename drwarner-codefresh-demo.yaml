@@ -9,7 +9,7 @@ steps:
     type: git-clone
     title: Cloning main repository...
     repo: "drwarner/example-voting-app"
-    revision: {{CF_BRANCH}}
+    revision: master
     stage: clone
   build_docker_images:
     type: parallel

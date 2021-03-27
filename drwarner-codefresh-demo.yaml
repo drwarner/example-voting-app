@@ -23,6 +23,14 @@ steps:
         working_directory: ./result/
         dockerfile: Dockerfile
         tag: demo
+      pushToMyRegistry:
+        stage: 'my push phase'
+        type: push
+        title: Pushing to a registry
+        candidate: ${{build_result_image}}
+        tag: ${{CF_SHORT_REVISION}}
+        image_name: drwarner/example-voting-app/result
+        registry: docker.io
       # build_vote_image:
       #   title: Building Vote image...
       #   type: build

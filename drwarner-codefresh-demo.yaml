@@ -19,47 +19,31 @@ steps:
       build_result_image:
         title: Building Result image...
         type: build
-        image_name: drwarner/example-voting-app/result
+        image_name: drwarner/example-voting-app-result
         working_directory: ./result/
         dockerfile: Dockerfile
         tag: demo
-      push1:
-        title: "Pushing 1st Docker image"
-        type: push
-        image_name: drwarner/example-voting-app/result
-        tag: "latest"
-        stage: "push" 
-        registry: dockerhub
-        candidate: ${{build_result_image}}
-      # pushToMyRegistry:
-      #   stage: 'my push phase'
-      #   type: push
-      #   title: Pushing to a registry
-      #   candidate: ${{build_result_image}}
-      #   tag: ${{CF_SHORT_REVISION}}
-      #   image_name: drwarner/example-voting-app/result
-      #   registry: docker.io
-      # build_vote_image:
-      #   title: Building Vote image...
-      #   type: build
-      #   image_name: example-voting-app/vote
-      #   working_directory: ./vote/
-      #   dockerfile: Dockerfile
-      #   tag: lab
-      # build_worker_image:
-      #   title: Building Worker image...
-      #   type: build
-      #   image_name: example-voting-app/worker
-      #   working_directory: ./worker/
-      #   dockerfile: Dockerfile
-      #   tag: lab
-      # build_test_image:
-      #   title: Building Test image...
-      #   type: build
-      #   image_name: example-voting-app/tests
-      #   working_directory: ./tests/
-      #   dockerfile: Dockerfile
-      #   tag: lab
+      build_vote_image:
+        title: Building Vote image...
+        type: build
+        image_name: example-voting-app-vote
+        working_directory: ./vote/
+        dockerfile: Dockerfile
+        tag: demo
+      build_worker_image:
+        title: Building Worker image...
+        type: build
+        image_name: example-voting-app-worker
+        working_directory: ./worker/
+        dockerfile: Dockerfile
+        tag: demo
+      build_test_image:
+        title: Building Test image...
+        type: build
+        image_name: example-voting-app-tests
+        working_directory: ./tests/
+        dockerfile: Dockerfile
+        tag: demo
 # #  run_integration_tests:
 #     title: Running integration tests
 #     stage: test

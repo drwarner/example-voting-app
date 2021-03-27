@@ -23,6 +23,14 @@ steps:
         working_directory: ./result/
         dockerfile: Dockerfile
         tag: demo
+      push1:
+        title: "Pushing 1st Docker image"
+        type: push
+        image_name: drwarner/example-voting-app/result
+        tag: "latest"
+        stage: "push" 
+        registry: dockerhub
+        candidate: ${{build_result_image}}
       # pushToMyRegistry:
       #   stage: 'my push phase'
       #   type: push

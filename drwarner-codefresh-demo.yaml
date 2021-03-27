@@ -26,21 +26,21 @@ steps:
       build_vote_image:
         title: Building Vote image...
         type: build
-        image_name: example-voting-app-vote
+        image_name: drwarner/example-voting-app-vote
         working_directory: ./vote/
         dockerfile: Dockerfile
         tag: demo
       build_worker_image:
         title: Building Worker image...
         type: build
-        image_name: example-voting-app-worker
+        image_name: drwarner/example-voting-app-worker
         working_directory: ./worker/
         dockerfile: Dockerfile
         tag: demo
       build_test_image:
         title: Building Test image...
         type: build
-        image_name: example-voting-app-tests
+        image_name: drwarner/example-voting-app-tests
         working_directory: ./tests/
         dockerfile: Dockerfile
         tag: demo

@@ -37,19 +37,19 @@ steps:
         working_directory: ./worker/
         dockerfile: Dockerfile
         tag: demo
-      # build_test_image:
-      #   title: Building Test image...
-      #   type: build
-      #   image_name: drwarner/example-voting-app-tests
-      #   working_directory: ./tests/
-      #   dockerfile: Dockerfile
-      #   tag: demo
-    # deploy_k8s:
-    #   type: deploy
-    #   title: "Deploying to k8s cluster"
-    #   kind: kubernetes
-    #   namespace: example-voting-app
-    #   file_path: ./drwarner-k8s-deploy.yaml
+      build_test_image:
+        title: Building Test image...
+        type: build
+        image_name: drwarner/example-voting-app-tests
+        working_directory: ./tests/
+        dockerfile: Dockerfile
+        tag: demo
+    deploy_k8s:
+      type: deploy
+      title: "Deploying to k8s cluster"
+      kind: kubernetes
+      namespace: example-voting-app
+      file_path: ./drwarner-k8s-deploy.yaml
 # #  run_integration_tests:
 #     title: Running integration tests
 #     stage: test

@@ -3,7 +3,7 @@ stages:
   - clone
   - build
 # - test
-# - deploy
+  - deploy
 steps:
   main_clone:
     type: git-clone
@@ -37,13 +37,19 @@ steps:
         working_directory: ./worker/
         dockerfile: Dockerfile
         tag: demo
-      build_test_image:
-        title: Building Test image...
-        type: build
-        image_name: drwarner/example-voting-app-tests
-        working_directory: ./tests/
-        dockerfile: Dockerfile
-        tag: demo
+      # build_test_image:
+      #   title: Building Test image...
+      #   type: build
+      #   image_name: drwarner/example-voting-app-tests
+      #   working_directory: ./tests/
+      #   dockerfile: Dockerfile
+      #   tag: demo
+    deploy_k8s:
+      type: deploy
+      title: "Deploying to k8s cluster"
+      kind: kubernetes
+      namespace: example-voting-app
+      file_path: ./drwarner-k8s-deploy.yaml
 # #  run_integration_tests:
 #     title: Running integration tests
 #     stage: test
@@ -107,61 +113,3 @@ steps:
 #             - REMOTE_HOST=http://chrome_node:5555
 #             - NODE_MAX_SESSION=5
 #             - NODE_MAX_INSTANCES=5
-#  launch_eva_environment:
-    # title: Launch EVA Test Environment
-    # stage: deploy
-    # type: launch-composition
-    # arguments:
-    #   composition:
-    #     version: '3'
-    #     services:
-    #       vote:
-    #         image: ${{build_vote_image}}
-    #         ports:
-    #           - '80'
-    #         networks:
-    #           - front-tier
-    #           - back-tier
-    #         environment:
-    #           - REDIS_HOST=redis
-    #       result:
-    #         image: ${{build_result_image}}
-    #         ports:
-    #           - '80'
-    #         networks:
-    #           - front-tier
-    #           - back-tier
-    #         environment:
-    #           - POSTGRES_SERVER=db
-    #           - POSTGRES_USERNAME=postgres
-    #           - POSTGRES_PASSWORD=postgres
-    #       worker:
-    #         image: ${{build_worker_image}}
-    #         depends_on:
-    #           - redis
-    #         networks:
-    #           - back-tier
-    #         environment:
-    #           - POSTGRES_SERVER=db
-    #           - POSTGRES_USERNAME=postgres
-    #           - POSTGRES_PASSWORD=postgres
-    #           - REDIS_HOST=redis
-    #       redis:
-    #         image: redis:alpine
-    #         networks:
-    #           - back-tier
-    #       db:
-    #         image: postgres:9.4
-    #         environment:
-    #           - POSTGRES_USER=postgres
-    #           - POSTGRES_PASSWORD=postgres
-    #         volumes:
-    #           - db-data:/var/lib/postgresql/data
-    #         networks:
-    #           - back-tier   
-    #     volumes:
-    #       db-data: null
-    #     networks:
-    #       front-tier: null
-    #       back-tier: null
-    #   environment_name: eva-test

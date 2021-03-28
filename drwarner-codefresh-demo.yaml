@@ -48,6 +48,7 @@ steps:
     type: deploy
     title: "Deploying to k8s cluster"
     kind: kubernetes
+    cluster: gke_codefresh-demo-308917_us-east1-b_codefresh-demo
     namespace: example-voting-app
     file_path: ./drwarner-k8s-deploy.yaml
 # #  run_integration_tests:

@@ -44,12 +44,12 @@ steps:
         working_directory: ./tests/
         dockerfile: Dockerfile
         tag: demo
-    deploy_k8s:
-      type: deploy
-      title: "Deploying to k8s cluster"
-      kind: kubernetes
-      namespace: example-voting-app
-      file_path: ./drwarner-k8s-deploy.yaml
+  deploy_k8s:
+    type: deploy
+    title: "Deploying to k8s cluster"
+    kind: kubernetes
+    namespace: example-voting-app
+    file_path: ./drwarner-k8s-deploy.yaml
 # #  run_integration_tests:
 #     title: Running integration tests
 #     stage: test

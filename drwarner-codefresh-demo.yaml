@@ -47,6 +47,7 @@ steps:
   deploy_k8s:
     type: deploy
     title: "Deploying to k8s cluster"
+    stage: deploy
     kind: kubernetes
     cluster: gke_codefresh-demo-308917_us-east1-b_codefresh-demo
     namespace: example-voting-app

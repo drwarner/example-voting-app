@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
@@ -10,6 +10,9 @@ metadata:
     version: {{ .Values.image.tag | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: 
+      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
@@ -22,12 +25,16 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecret }}
       containers:
-        - name: vote
+        - name: result
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{default "Always" .Values.image.pullPolicy}}
           ports:
             - containerPort: 80
               name: http
           env:
-          - name: REDIS_HOST
-            value: {{ .Values.redis.host | default (printf "%s-redis" ( .Release.Name )) | quote }}
+          - name: POSTGRES_SERVER
+            value: {{ .Values.postgresql.server | default (printf "%s-postgresql" ( .Release.Name )) | quote }}
+          - name: POSTGRES_USERNAME
+            value: {{ default "postgres" .Values.postgresql.postgresUser | quote }}
+          - name: POSTGRES_PASSWORD
+            value: {{ default "postgres" .Values.postgresql.postgresPassword | quote }}

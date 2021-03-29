@@ -116,13 +116,6 @@ steps:
 #             - REMOTE_HOST=http://chrome_node:5555
 #             - NODE_MAX_SESSION=5
 #             - NODE_MAX_INSTANCES=5
-  enrich-image:
-      title: Add PR info
-      type: image-enricher
-      stage: "metadata"
-      arguments:
-        BRANCH: '${{CF_BRANCH}}'
-        REPO: 'drwarner/example-voting-app'
   clone_gitops:
     title: cloning gitops repo
     type: git-clone

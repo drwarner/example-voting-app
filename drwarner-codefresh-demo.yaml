@@ -3,13 +3,14 @@ stages:
   - clone
   - build
 # - test
-  - deploy
+  - metadata
+  - gitops
 steps:
   main_clone:
     type: git-clone
     title: Cloning main repository...
     repo: "drwarner/example-voting-app"
-    revision: master
+    revision: '${{CF_REVISION}}'
     stage: clone
   build_docker_images:
     type: parallel
@@ -22,36 +23,36 @@ steps:
         image_name: drwarner/example-voting-app-result
         working_directory: ./result/
         dockerfile: Dockerfile
-        tag: demo
+        tags:
+        - "latest"
+        - '${{CF_SHORT_REVISION}}'
       build_vote_image:
         title: Building Vote image...
         type: build
         image_name: drwarner/example-voting-app-vote
         working_directory: ./vote/
         dockerfile: Dockerfile
-        tag: demo
+        tags:
+        - "latest"
+        - '${{CF_SHORT_REVISION}}'
       build_worker_image:
         title: Building Worker image...
         type: build
         image_name: drwarner/example-voting-app-worker
         working_directory: ./worker/
         dockerfile: Dockerfile
-        tag: demo
+        tags:
+        - "latest"
+        - '${{CF_SHORT_REVISION}}'
       build_test_image:
         title: Building Test image...
         type: build
         image_name: drwarner/example-voting-app-tests
         working_directory: ./tests/
         dockerfile: Dockerfile
-        tag: demo
-  # deploy_k8s:
-  #   type: deploy
-  #   title: "Deploying to k8s cluster"
-  #   stage: deploy
-  #   kind: kubernetes
-  #   cluster: gke_codefresh-demo-308917_us-east1-b_codefresh-demo
-  #   namespace: example-voting-app
-  #   file_path: ./drwarner-k8s-deploy.yaml
+        tags:
+        - "latest"
+        - '${{CF_SHORT_REVISION}}'
 # #  run_integration_tests:
 #     title: Running integration tests
 #     stage: test
@@ -115,3 +116,47 @@ steps:
 #             - REMOTE_HOST=http://chrome_node:5555
 #             - NODE_MAX_SESSION=5
 #             - NODE_MAX_INSTANCES=5
+  enrich-image:
+      title: Add PR info
+      type: image-enricher
+      stage: "metadata"
+      arguments:
+        BRANCH: '${{CF_BRANCH}}'
+        REPO: 'drwarner/example-voting-app'
+  clone_gitops:
+    title: cloning gitops repo
+    type: git-clone
+    arguments:
+      repo: 'https://github.com/drwarner/k8s-example-voting-app'
+      revision: 'master'
+    stage: "gitops"
+    when:
+      branch:
+        only:
+          - master
+  update_manifest:
+    title: "Update k8s manifest"
+    image: alpine:latest
+    commands:
+      - echo "${{CF_BRANCH}}-${{CF_SHORT_REVISION}}" >> version.yaml
+    working_directory: "${{clone_gitops}}" 
+    stage: "gitops"
+    when:
+      branch:
+        only:
+          - master 
+  commit_and_push:
+    title: Commit manifest
+    type: git-commit
+    stage: "gitops"
+    arguments:
+      repo: 'drwarner/example-voting-app'
+      git: github
+      working_directory: "${{clone_gitops}}"
+      commit_message: Updated manifest
+      git_user_name: ${{CF_COMMIT_AUTHOR}}
+      git_user_email: ${{CF_COMMIT_AUTHOR}}@gmail.com
+    when:
+      branch:
+        only:
+          - master     

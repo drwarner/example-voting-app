@@ -3,10 +3,11 @@
 ## Architecture
 
 CI pipeline:
-- build > test in composition > update environment repo
+- build > test in composition (required for merge to master) > update environment repo
 
-GitOps pipeline:
-- environment repo webhook > codefresh pipeline to sync to argo > ArgoCD applies manifest
+GitOps CD pipeline:
+- [environment repo](https://github.com/drwarner/k8s-example-voting-app) webhook > codefresh pipeline to sync to argo > ArgoCD applies manifest
+
 
 Also implemented but not utilized in pipeline:
 

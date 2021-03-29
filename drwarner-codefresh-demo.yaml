@@ -120,7 +120,7 @@ steps:
     title: cloning gitops repo
     type: git-clone
     arguments:
-      repo: 'https://github.com/drwarner/k8s-example-voting-app'
+      repo: 'drwarner/k8s-example-voting-app'
       revision: 'master'
     stage: "gitops"
     when:
@@ -132,7 +132,7 @@ steps:
     image: alpine:latest
     commands:
       - echo "${{CF_BRANCH}}-${{CF_SHORT_REVISION}}" >> version.yaml
-    working_directory: . 
+    working_directory: /codefresh/volume/k8s-example-voting-app 
     stage: "gitops"
     when:
       branch:
@@ -143,12 +143,14 @@ steps:
     type: git-commit
     stage: "gitops"
     arguments:
-      repo: 'drwarner/example-voting-app'
+      repo: 'drwarner/k8s-example-voting-app'
       git: github
-      working_directory: .
+      working_directory: /codefresh/volume/k8s-example-voting-app
       commit_message: Updated manifest
       git_user_name: ${{CF_COMMIT_AUTHOR}}
       git_user_email: ${{CF_COMMIT_AUTHOR}}@gmail.com
+      add: 
+        - .
     when:
       branch:
         only:

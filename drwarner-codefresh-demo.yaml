@@ -2,7 +2,7 @@ version: "1.0"
 stages:
   - clone
   - build
-# - test
+  - test
   - metadata
   - gitops
 steps:
@@ -53,69 +53,69 @@ steps:
         tags:
         - "latest"
         - '${{CF_SHORT_REVISION}}'
-# #  run_integration_tests:
-#     title: Running integration tests
-#     stage: test
-#     image: ${{build_test_image}}
-#     environment:
-#       - VOTE_ENDPOINT_IP=vote
-#       - RESULT_ENDPOINT_IP=result
-#       - BROWSER=chrome
-#     commands:
-#       - python -m pytest -vvv --alluredir=${{CF_VOLUME_PATH}}/allure-results ./tests/selenium/test_app.py
-#     services:
-#       scope: global
-#       composition:
-#         vote:
-#           image: ${{build_vote_image}}
-#           ports:
-#             - '80'
-#           environment:
-#             - REDIS_HOST=redis
-#         result:
-#           image: ${{build_result_image}}
-#           ports:
-#             - '80'
-#           environment:
-#             - POSTGRES_SERVER=db
-#             - POSTGRES_USERNAME=postgres
-#             - POSTGRES_PASSWORD=postgres
-#         worker:
-#           image: ${{build_worker_image}}
-#           depends_on:
-#             - redis
-#           environment:
-#             - POSTGRES_SERVER=db
-#             - POSTGRES_USERNAME=postgres
-#             - POSTGRES_PASSWORD=postgres
-#             - REDIS_HOST=redis
-#         redis:
-#           image: redis:alpine
-#         db:
-#           image: postgres:9.4
-#           environment:
-#             - POSTGRES_USER=postgres
-#             - POSTGRES_PASSWORD=postgres
-#         selenium_hub:
-#           image: selenium/hub:3.13.0
-#           ports:
-#             - 4444
-#           environment:
-#             - SE_OPTS=-debug
-#             - GRID_MAX_SESSION=5
-#         chrome_node:
-#           image: selenium/node-chrome:3.13.0
-#           ports:
-#             - 5900
-#             - 5555
-#           command: bash -c "sleep 5 && /opt/bin/entry_point.sh"
-#           depends_on: 
-#             - selenium_hub
-#           environment:
-#             - HUB_HOST=selenium_hub
-#             - REMOTE_HOST=http://chrome_node:5555
-#             - NODE_MAX_SESSION=5
-#             - NODE_MAX_INSTANCES=5
+  run_integration_tests:
+    title: Running integration tests
+    stage: test
+    image: ${{build_test_image}}
+    environment:
+      - VOTE_ENDPOINT_IP=vote
+      - RESULT_ENDPOINT_IP=result
+      - BROWSER=chrome
+    commands:
+      - python -m pytest -vvv --alluredir=${{CF_VOLUME_PATH}}/allure-results ./tests/selenium/test_app.py
+    services:
+      scope: global
+      composition:
+        vote:
+          image: ${{build_vote_image}}
+          ports:
+            - '80'
+          environment:
+            - REDIS_HOST=redis
+        result:
+          image: ${{build_result_image}}
+          ports:
+            - '80'
+          environment:
+            - POSTGRES_SERVER=db
+            - POSTGRES_USERNAME=postgres
+            - POSTGRES_PASSWORD=postgres
+        worker:
+          image: ${{build_worker_image}}
+          depends_on:
+            - redis
+          environment:
+            - POSTGRES_SERVER=db
+            - POSTGRES_USERNAME=postgres
+            - POSTGRES_PASSWORD=postgres
+            - REDIS_HOST=redis
+        redis:
+          image: redis:alpine
+        db:
+          image: postgres:9.4
+          environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        selenium_hub:
+          image: selenium/hub:3.13.0
+          ports:
+            - 4444
+          environment:
+            - SE_OPTS=-debug
+            - GRID_MAX_SESSION=5
+        chrome_node:
+          image: selenium/node-chrome:3.13.0
+          ports:
+            - 5900
+            - 5555
+          command: bash -c "sleep 5 && /opt/bin/entry_point.sh"
+          depends_on: 
+            - selenium_hub
+          environment:
+            - HUB_HOST=selenium_hub
+            - REMOTE_HOST=http://chrome_node:5555
+            - NODE_MAX_SESSION=5
+            - NODE_MAX_INSTANCES=5
   clone_gitops:
     title: cloning gitops repo
     type: git-clone
@@ -131,7 +131,7 @@ steps:
     title: "Update k8s manifest"
     image: alpine:latest
     commands:
-      - echo "${{CF_BRANCH}}-${{CF_SHORT_REVISION}}" >> version.yaml
+      - echo "${{CF_BRANCH}}-${{CF_REVISION}}" > manifest-version
     working_directory: /codefresh/volume/k8s-example-voting-app 
     stage: "gitops"
     when:

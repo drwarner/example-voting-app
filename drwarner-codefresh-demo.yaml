@@ -132,7 +132,7 @@ steps:
     image: alpine:latest
     commands:
       - echo "${{CF_BRANCH}}-${{CF_SHORT_REVISION}}" >> version.yaml
-    working_directory: "${{clone_gitops}}" 
+    working_directory: . 
     stage: "gitops"
     when:
       branch:
@@ -145,7 +145,7 @@ steps:
     arguments:
       repo: 'drwarner/example-voting-app'
       git: github
-      working_directory: "${{clone_gitops}}"
+      working_directory: .
       commit_message: Updated manifest
       git_user_name: ${{CF_COMMIT_AUTHOR}}
       git_user_email: ${{CF_COMMIT_AUTHOR}}@gmail.com
